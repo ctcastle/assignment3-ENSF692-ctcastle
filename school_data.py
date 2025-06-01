@@ -37,15 +37,70 @@ def main():
     print("array number of dimensions: ", s_y_g_arr.ndim)
     print("array shape: ", s_y_g_arr.shape)
     print("array size: ", s_y_g_arr.size)
-    print(s_y_g_arr)
+    #print(s_y_g_arr) #Testing array 
     # Prompt for user input
-
+    userInput = input("Please enter the school id or school name for desired report: ")
+    used_ID = True 
+    if userInput.isdigit() and int(userInput) in school_ids:
+        print('ID')
+    elif userInput in school_names:
+        used_ID = False 
+        print('NAME')
+    else:
+        raise ValueError 
     # Print Stage 2 requirements here
     print("\n***Requested School Statistics***\n")
+    index = list(range(20))
+    school_id_dict = dict(zip(school_ids,index))
+    school_name_dict = dict(zip(school_names,index))
+    #School name and code 
+    if used_ID:
+        school_ID = int(userInput)
+        school_index = school_id_dict[school_ID]
+        school_name = school_names[school_index]
+    else: 
+        school_name = userInput 
+        school_index = school_name_dict[school_name]
+        school_ID = school_ids[school_index]
+    print(f'{school_ID}: {school_name}')
+    #Mean enrollment for Grade 10 
+    print(s_y_g_arr[school_index,:,0].mean(dtype=np.integer))
+    #Mean enrollment for Grade 11 
+    print(s_y_g_arr[school_index,:,1].mean(dtype=np.integer))
+    #Mean enrollment for Grade 12 
+    print(s_y_g_arr[school_index,:,2].mean(dtype=np.integer))
+    #Highest enrollment for a single grade with the entire 10 year period 
+    print(int(s_y_g_arr[school_index,:,:].max()))
+    #Highest enrollemnt for a single grade within the entire 10 year time period 
+    print(int(s_y_g_arr[school_index,:,:].min()))
+    #Total enrollment for each year from 2013 to 2022 
+    for i in range(10):
+        print(int(s_y_g_arr[school_index,i,:].sum()))
+    #Total ten year enrollment 
+    print(int(s_y_g_arr[school_index,:,:].sum()))
+    #Mean total enrollment over 10 years 
+    print(int(s_y_g_arr[school_index,:,:].sum()/s_y_g_arr[school_index,:,0].size))
+    #ANY enrollment over 500, print the median value of those enrollments, else No enrollments over 500 
+    print(s_y_g_arr[school_index,:,:])
+    print(s_y_g_arr[school_index,s_y_g_arr[school_index,:,:] > 500])
+    print(np.median(s_y_g_arr[school_index,s_y_g_arr[school_index,:,:] > 500]))
+
+
+
 
     # Print Stage 3 requirements here
     print("\n***General Statistics for All Schools***\n")
-
+    sub_2013 = s_y_g_arr[:,0,:]
+    sub_2022 = s_y_g_arr[:,-1,:]
+    sub_2022 = sub_2022[~np.isnan(sub_2022)]
+    grad = s_y_g_arr[:,9,2]
+    grad = grad[~np.isnan(grad)]
+    filtered = s_y_g_arr[~np.isnan(s_y_g_arr)]
+    print(sub_2013.mean(dtype=np.integer))
+    print(sub_2022.mean(dtype=np.integer))
+    print(grad.sum())
+    print(filtered.max())
+    print(filtered.min())
 
 if __name__ == '__main__':
     main()
