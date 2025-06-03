@@ -30,7 +30,8 @@ class SchoolStats:
         self.name = name 
         self.id = id 
         self.arr = arr 
-    def grade_mean(self,grade):
+
+    def grade_mean(self,grade): # Numpy computation command #1 
         """
         Calculates the mean of a school's enrollment data for a given grade
         
@@ -50,6 +51,7 @@ class SchoolStats:
                 return int(np.nanmean(self.arr[:,2])) 
             case _:
                 return np.nan 
+            
     def total_mean(self):
         """
         Calculates the mean for the school's entire range of input data
@@ -60,7 +62,8 @@ class SchoolStats:
         
         """
         return int(np.nansum(self.arr)/np.nansum(~np.isnan(self.arr[:,0])))
-    def median_of_500_plus_enrollments(self):
+    
+    def median_of_500_plus_enrollments(self): # Numpy computation command #2
         """
         Calculates the median value of all enrollments greater than 500
         
@@ -70,12 +73,13 @@ class SchoolStats:
             OR 
             String: Info that no enrollments were over 500 for this school 
         """
-        sub_arr = self.arr[self.arr > 500] 
+        sub_arr = self.arr[self.arr > 500] # Numpy masking 
         if sub_arr.size > 0:
             return int(np.nanmedian(sub_arr))
         else:
             return "No enrollments over 500"
-    def max_enroll(self):
+        
+    def max_enroll(self): # Numpy computation command #3 
         """
         Outputs the nansafe max value of the school's entire enrollment data
         
@@ -84,11 +88,13 @@ class SchoolStats:
             int: Nansafe max value of school's entire enrollment data 
         """
         return int(np.nanmax(self.arr))
-    def min_enroll(self):
+    
+    def min_enroll(self): # Numpy computation command #4
         """
         Outputs the nansafe min value of the school's entire enrollment data"""
         return int(np.nanmin(self.arr))
-    def enroll_per_year(self,year):
+    
+    def enroll_per_year(self,year): # Numpy computation command #5 
         """
         Outputs the nansafe sum of the enrollment data of a school for a particular year
         
@@ -98,6 +104,7 @@ class SchoolStats:
             int: The total enrollment for that school during that year, zero if all values are nan 
         """
         return int(np.nansum(self.arr[year,:]))
+    
     def total_enroll(self):
         """
         Outputs the nansafe sum of the total enrollment data for a given school across all years of available data
@@ -130,16 +137,16 @@ def inputParser(userInput):
         raise ValueError 
 
     index = list(range(20))
-    school_id_dict = dict(zip(school_ids,index))
-    school_name_dict = dict(zip(school_names,index))
+    school_id_dict = dict(zip(school_ids,index)) # Creating dict 
+    school_name_dict = dict(zip(school_names,index)) # Creating dict 
     #School name and code 
     if used_ID:
         school_ID = int(userInput)
-        school_index = school_id_dict[school_ID]
+        school_index = school_id_dict[school_ID] # Used to grab school index if given id
         school_name = school_names[school_index]
     else: 
         school_name = userInput 
-        school_index = school_name_dict[school_name]
+        school_index = school_name_dict[school_name] # Used to grab school index if given name 
         school_ID = school_ids[school_index]
     return school_ID, school_name, school_index 
 
@@ -151,7 +158,7 @@ def main():
                  year_2017,year_2018,year_2019,year_2020,
                  year_2021,year_2022]) # Aggregating data into one large numpy array 
     y_s_g_arr = total_arr.reshape((10,20,3)) # Reshaping data to usable form 
-    s_y_g_arr = np.swapaxes(y_s_g_arr,0,1)  #Reshaping again for personal preference 
+    s_y_g_arr = np.swapaxes(y_s_g_arr,0,1)  #Reshaping again for personal preference, this is my 3-dimensional array 
     print("Dimensions of full data array: ", s_y_g_arr.ndim)
     print("Shape of full data array: ", s_y_g_arr.shape)
     print("Total data array size: ", s_y_g_arr.size)
@@ -169,7 +176,7 @@ def main():
         return
     
     # Creating the school object for the desired school to perform analysis on
-    school = SchoolStats(school_name, school_ID, s_y_g_arr[school_index,:,:]) 
+    school = SchoolStats(school_name, school_ID, s_y_g_arr[school_index,:,:]) # Using sub-array view as the data array for the object   
     print(f'School ID - {school.id}: Name - {school.name}')
 
     # Mean enrollment for Grade 10 
